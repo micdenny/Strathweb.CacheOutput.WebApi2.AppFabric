@@ -19,11 +19,11 @@ You can register your implementation using a handy *GlobalConfiguration* extensi
 
 ```csharp
 //instance
-configuration.CacheOutputConfiguration().RegisterCacheOutputProvider(() => new MyCache());
+GlobalConfiguration.Configuration.CacheOutputConfiguration().RegisterCacheOutputProvider(() => new MyCache());
 
 //singleton
 var cache = new MyCache();
-configuration.CacheOutputConfiguration().RegisterCacheOutputProvider(() => cache);	
+GlobalConfiguration.Configuration.CacheOutputConfiguration().RegisterCacheOutputProvider(() => cache);	
 ```
 
 If you prefer **CacheOutput** to use resolve the cache implementation directly from your dependency injection provider, that's also possible. Simply register your *IApiOutputCache* implementation in your Web API DI and that's it. Whenever **CacheOutput** does not find an implementation in the *GlobalConiguration*, it will fall back to the DI resolver. Example (using Autofac for Web API):
@@ -32,7 +32,7 @@ If you prefer **CacheOutput** to use resolve the cache implementation directly f
 cache = new MyCache();
 var builder = new ContainerBuilder();
 builder.RegisterInstance(cache);
-config.DependencyResolver = new AutofacWebApiDependencyResolver(builder.Build());
+GlobalConfiguration.Configuration.DependencyResolver = new AutofacWebApiDependencyResolver(builder.Build());
 ```
 
 If no implementation is available in neither *GlobalConfiguration* or *DependencyResolver*, we will default to *System.Runtime.Caching.MemoryCache*.
