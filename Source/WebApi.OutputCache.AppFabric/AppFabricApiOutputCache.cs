@@ -54,11 +54,19 @@ namespace WebApi.OutputCache.AppFabric
             Connect();
         }
 
-        public IEnumerable<string> AllKeys { get; }
+        public IEnumerable<string> AllKeys
+        {
+            get
+            {
+                // not supported
+                return Enumerable.Empty<string>();
+            }
+        }
 
         public void RemoveStartsWith(string key)
         {
-            throw new NotSupportedException("RemoveStartsWith is not currently supported with AppFabric cache provider.");
+            // TODO: this should be implemented differently (see: https://github.com/filipw/AspNetWebApi-OutputCache#server-side-caching)
+            RunRetry(() => { _dataCache.Remove(key); });
         }
 
         public T Get<T>(string key) where T : class
@@ -85,7 +93,6 @@ namespace WebApi.OutputCache.AppFabric
         public void Add(string key, object o, DateTimeOffset expiration, string dependsOnKey = null)
         {
             if (o == null) throw new ArgumentNullException(nameof(o));
-            if (!string.IsNullOrEmpty(dependsOnKey)) throw new NotSupportedException("dependsOnKey is not currently supported with AppFabric cache provider.");
 
             RunRetry(() => { _dataCache.Add(key, o, expiration.Subtract(DateTimeOffset.UtcNow)); });
         }
