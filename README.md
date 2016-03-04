@@ -6,7 +6,7 @@ Extension to [Strathweb CacheOutput WebApi2](https://github.com/filipw/Strathweb
 
 Installation
 --------------------
-You can build from the source here, or you can install the Nuget version:
+You can build from the source here, or you can install the [Nuget version](https://www.nuget.org/packages/Strathweb.CacheOutput.WebApi2.AppFabric/):
 
 For Web API 2 (.NET 4.5)
     
