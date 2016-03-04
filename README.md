@@ -11,3 +11,28 @@ You can build from the source here, or you can install the [Nuget version](https
 For Web API 2 (.NET 4.5)
     
     PM> Install-Package Strathweb.CacheOutput.WebApi2.AppFabric
+    
+Usage
+--------------------
+
+You can register your implementation using a handy *GlobalConfiguration* extension method:
+
+```csharp
+//instance
+configuration.CacheOutputConfiguration().RegisterCacheOutputProvider(() => new MyCache());
+
+//singleton
+var cache = new MyCache();
+configuration.CacheOutputConfiguration().RegisterCacheOutputProvider(() => cache);	
+```
+
+If you prefer **CacheOutput** to use resolve the cache implementation directly from your dependency injection provider, that's also possible. Simply register your *IApiOutputCache* implementation in your Web API DI and that's it. Whenever **CacheOutput** does not find an implementation in the *GlobalConiguration*, it will fall back to the DI resolver. Example (using Autofac for Web API):
+
+```csharp
+cache = new MyCache();
+var builder = new ContainerBuilder();
+builder.RegisterInstance(cache);
+config.DependencyResolver = new AutofacWebApiDependencyResolver(builder.Build());
+```
+
+If no implementation is available in neither *GlobalConfiguration* or *DependencyResolver*, we will default to *System.Runtime.Caching.MemoryCache*.
