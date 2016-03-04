@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Strathweb.CacheOutput.WebApi2.AppFabric</id>
+    <version>$version$</version>
+    <title>Strathweb.CacheOutput.WebApi2.AppFabric</title>
+    <authors>Michael Denny</authors>
+    <owners>micdenny</owners>
+    <licenseUrl>https://github.com/micdenny/Strathweb.CacheOutput.WebApi2.AppFabric/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/micdenny/Strathweb.CacheOutput.WebApi2.AppFabric</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Extension to Strathweb CacheOutput WebApi2 for Microsoft AppFabric Distributed Caching</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>aspnet webapi aspnetwebapi appfabric cache caching</tags>
+  </metadata>
+</package>
