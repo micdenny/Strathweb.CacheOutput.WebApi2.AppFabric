@@ -1,8 +1,12 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/r526dq5gpud5tb6y?svg=true)](https://ci.appveyor.com/project/micdenny/strathweb-cacheoutput-webapi2-appfabric)
 
+# DO NOT USE THIS LIBRARY!
+
+This library is in pre-pre-pre-release, and does not work because of an issue found on the [base library](https://github.com/filipw/AspNetWebApi-OutputCache) that tries to cache a non-serializeble object. I'm working on it.
+
 # AppFabric implementation of ASP.NET Web API CacheOutput
 
-Extension to [Strathweb CacheOutput WebApi2](https://github.com/filipw/Strathweb.CacheOutput.Azure) for Microsoft AppFabric Distributed Caching
+Extension to [Strathweb CacheOutput WebApi2](https://github.com/filipw/AspNetWebApi-OutputCache) for Microsoft AppFabric Distributed Caching
 
 Installation
 --------------------
