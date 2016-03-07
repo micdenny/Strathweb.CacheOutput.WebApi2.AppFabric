@@ -2,7 +2,9 @@
 
 # DO NOT USE THIS LIBRARY!
 
-This library is in pre-pre-pre-release, and does not work because of an issue found on the [base library](https://github.com/filipw/AspNetWebApi-OutputCache) that tries to cache a non-serializeble object. I'm working on it.
+This library is in pre-pre-pre-release, and does not work because of [an issue](https://github.com/filipw/AspNetWebApi-OutputCache/issues/165) found on the [base library](https://github.com/filipw/AspNetWebApi-OutputCache) that tries to cache a non-serializeble object.
+
+I've already sent a [pull request](https://github.com/filipw/AspNetWebApi-OutputCache/pull/166) that fixes the problem, waiting to be merged/discussed.
 
 # AppFabric implementation of ASP.NET Web API CacheOutput
 
