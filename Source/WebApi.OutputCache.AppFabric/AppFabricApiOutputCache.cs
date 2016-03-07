@@ -15,14 +15,14 @@ namespace WebApi.OutputCache.AppFabric
 
         /* 
          * Example of backoff in action
-         * BackOff = TimeSpan.FromSeconds(3);
-         * MinBackOff = TimeSpan.FromSeconds(3);
+         * BackOff = TimeSpan.FromSeconds(1);
+         * MinBackOff = TimeSpan.FromSeconds(0);
          * MaxBackOff = TimeSpan.FromSeconds(15);
          * 
-         * 3000
-         * 6072
-         * 10320
-         * 15000
+         * 0
+         * 880
+         * 2862
+         * 7644
          * 15000
          * then always 15000
          */
@@ -58,15 +58,21 @@ namespace WebApi.OutputCache.AppFabric
         {
             get
             {
-                // not supported
+                // can't implement it with AppFabric
                 return Enumerable.Empty<string>();
             }
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         public void RemoveStartsWith(string key)
         {
-            // TODO: this should be implemented differently (see: https://github.com/filipw/AspNetWebApi-OutputCache#server-side-caching)
-            RunRetry(() => { _dataCache.Remove(key); });
+            // TODO: this should be implemented differently to enable invalidation! Removing the master key should remove all the dependant keys. (see: https://github.com/filipw/AspNetWebApi-OutputCache#server-side-caching)
+            RunRetry(() => _dataCache.Remove(key));
         }
 
         public T Get<T>(string key) where T : class
@@ -81,11 +87,12 @@ namespace WebApi.OutputCache.AppFabric
 
         public void Remove(string key)
         {
-            RunRetry(() => { _dataCache.Remove(key); });
+            RunRetry(() => _dataCache.Remove(key));
         }
 
         public bool Contains(string key)
         {
+            // HACK: this actually will end-up in double the network traffic, but today there's no other way to do it with appfabric
             var value = RunRetry(() => _dataCache.Get(key));
             return value != null;
         }
@@ -93,19 +100,13 @@ namespace WebApi.OutputCache.AppFabric
         public void Add(string key, object o, DateTimeOffset expiration, string dependsOnKey = null)
         {
             if (o == null) throw new ArgumentNullException(nameof(o));
-
-            RunRetry(() => { _dataCache.Add(key, o, expiration.Subtract(DateTimeOffset.UtcNow)); });
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            
+            RunRetry(() => _dataCache.Put(key, o, expiration.Subtract(DateTimeOffset.UtcNow)));
         }
 
         private void Connect()
         {
-            RunRetry(() => { _dataCache = _dataCacheFactory.GetDefaultCache(); });
+            RunRetry(() => _dataCache = _dataCacheFactory.GetDefaultCache());
 
             if (_dataCache == null)
                 throw new Exception("AppFabric cache provider could not be initialized. Please check that the configuration is set properly and that the server is up and running.");
@@ -142,16 +143,7 @@ namespace WebApi.OutputCache.AppFabric
 
             return default(T);
         }
-
-        private static void RunRetry(Action retryAction, int maxRetries = DefaultMaxRetryCount)
-        {
-            RunRetry(() =>
-            {
-                retryAction();
-                return true;
-            }, maxRetries);
-        }
-
+        
         private static void PerformBackoff(int retryCount, Random random)
         {
             int increment = (int)((Math.Pow(2, retryCount - 1) - 1) *
